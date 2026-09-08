@@ -1,0 +1,6 @@
+- name: "Fase 5.7: Configurar Logrotate para que cree los nuevos logs diarios con permisos públicos"
+  ansible.builtin.lineinfile:
+    path: /etc/logrotate.d/apache2
+    regexp: '^\s*create\s+'
+    line: '        create 0666 root adm'  # <--- Forza a que cada nuevo archivo diario tenga permisos de lectura/escritura para todos
+    backrefs: yes
