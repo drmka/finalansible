@@ -1,0 +1,13 @@
+---
+- name: "Fase 1: Crear el grupo del sistema para JBoss"
+  ansible.builtin.group:
+    name: "{{ grupo_jboss }}"
+    state: present
+
+- name: "Fase 1: Crear el usuario del sistema para JBoss con su contraseña"
+  ansible.builtin.user:
+    name: "{{ usuario_jboss }}"
+    group: "{{ grupo_jboss }}"
+    password: "{{ 'jboss' | password_hash('sha512') }}"
+    shell: /bin/bash
+    state: present
