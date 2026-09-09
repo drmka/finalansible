@@ -1,0 +1,18 @@
+---
+- name: "Fase 0: Validaciones previas de Discos y Software"
+  ansible.builtin.include_tasks: validaciones.yaml
+
+- name: "Fase 1: Configuración de Usuarios y Grupos"
+  ansible.builtin.include_tasks: usuarios.yamyamll
+
+- name: "Fase 2: Gestión de Almacenamiento y File Systems"
+  ansible.builtin.include_tasks: discos.yaml
+
+- name: "Fase 3: Crear disco e colocar filesystem"
+  ansible.builtin.include_tasks: part.yaml
+
+- name: "Fase 4: Instalación de Software"
+  ansible.builtin.include_tasks: software.yaml
+
+- name: "Fase 5: Permisos y Enlaces Simbólicos"
+  ansible.builtin.include_tasks: config.yaml
