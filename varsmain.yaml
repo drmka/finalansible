@@ -1,0 +1,16 @@
+---
+disco_nuevo: /dev/sdb
+filesystem: ext4
+
+# Nombres para la estructura de LVM
+grupo_volumen: vg_tomcat
+volumen_software: lv_opt_tomcat
+volumen_logs: lv_var_logs
+
+# Rutas de directorios
+ruta_software: /opt/ibm/tomcat
+ruta_logs: /var/tomcat/logs
+
+# Datos del usuario
+usuario_jboss: jboss
+grupo_jboss: jboss
