@@ -1,0 +1,32 @@
+# ==============================================================================
+# FASE 5: Forzar Enlace Simbólico de Prueba (Limpiando conflictos previos)
+# ==============================================================================
+
+- name: "Fase 5.1: Detener Apache para liberar el bloqueo de la carpeta de logs"
+  ansible.builtin.service:
+    name: apache2
+    state: stopped  # <--- Apaga el servicio temporalmente para que suelte la ruta /var/log/apache2
+
+- name: "Fase 5.2: Eliminar cualquier directorio o enlace previo conflictivo"
+  ansible.builtin.file:
+    path: "/var/log/apache2"
+    state: absent   # <--- Borra la configuración vieja/bloqueada de golpe
+
+- name: "Fase 5.3: Asegurar permisos públicos en tu nuevo File System"
+  ansible.builtin.file:
+    path: "{{ ruta_logs }}"
+    state: directory
+    mode: '0777'    # <--- Garantiza que cualquier usuario o servicio pueda escribir aquí
+    recurse: yes
+
+- name: "Fase 5.4: Crear el enlace simbólico hacia tu File System (/var/tomcat/logs)"
+  ansible.builtin.file:
+    src: "{{ ruta_logs }}"      # <--- Tu FS de pruebas (/var/tomcat/logs)
+    dest: "/var/log/apache2"    # <--- El acceso directo que Apache buscará
+    state: link
+    force: yes                  # <--- Fuerza la creación si quedó algún rastro
+
+- name: "Fase 5.5: Volver a iniciar Apache"
+  ansible.builtin.service:
+    name: apache2
+    state: started   # <--- Al encender, escribirá directo en tu FS a través del link sin enterarse
