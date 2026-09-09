@@ -1,0 +1,11 @@
+---
+# 1. Instalar el servicio web de forma nativa en Debian usando APT
+- name: "Fase 4: Instalar servidor web Apache"
+  ansible.builtin.apt:
+    name:
+      - apache2
+    state: present
+    update_cache: yes  # Actualiza la lista de paquetes antes de intentar instalar
+  when: 
+    - not software_ya_existe
+
