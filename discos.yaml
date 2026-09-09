@@ -1,0 +1,44 @@
+---
+# 1. Instalar la herramienta LVM en Debian (Por si la VM no la tiene)
+- name: "Fase 2: Asegurar que las herramientas de LVM estén instaladas"
+  ansible.builtin.apt:
+    name: lvm2
+    state: present
+    update_cache: yes
+
+# 2. Crear las carpetas base
+- name: "Fase 2: Crear directorio para el software de Tomcat"
+  ansible.builtin.file:
+    path: "{{ ruta_software }}"
+    state: directory
+    mode: '0755'
+
+# 3. Crear el Grupo de Volúmenes (VG) usando el disco sdb completo
+- name: "Fase 2: Crear el Grupo de Volúmenes (VG) {{ grupo_volumen }}"
+  community.general.lvg:
+    vg: "{{ grupo_volumen }}"
+    pvs: "{{ disco_nuevo }}"
+    state: present
+
+# 4. Crear el Volumen Lógico (LV) de 1 GB para Software
+- name: "Fase 2: Crear el Volumen Lógico {{ volumen_software }} de 1 GB"
+  community.general.lvol:
+    vg: "{{ grupo_volumen }}"
+    lv: "{{ volumen_software }}"
+    size: 1g
+    state: present
+
+# 5. Crear el File System (Formatear el LV en ext4)
+- name: "Fase 2: Crear File System ext4 en el volumen lógico de software"
+  community.general.filesystem:
+    dev: "/dev/{{ grupo_volumen }}/{{ volumen_software }}"
+    fstype: "{{ filesystem }}"
+    state: present
+
+# 6. Montar el Volumen Lógico en la carpeta de software
+- name: "Fase 2: Montar el volumen lógico de software de forma activa"
+  ansible.posix.mount:
+    path: "{{ ruta_software }}"
+    src: "/dev/{{ grupo_volumen }}/{{ volumen_software }}"
+    fstype: "{{ filesystem }}"
+    state: mounted
