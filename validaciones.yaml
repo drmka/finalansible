@@ -1,0 +1,10 @@
+---
+- name: "Fase 0: Verificar con dpkg si apache2 ya se encuentra instalado"
+  ansible.builtin.command: dpkg-query -W -f='${Status}' apache2
+  register: apache_apt_check
+  failed_when: false       
+  changed_when: false      
+
+- name: "Fase 0: Establecer bandera de instalacion de software (Apache)"
+  ansible.builtin.set_fact:
+    software_ya_existe: "{{ 'ok installed' in apache_apt_check.stdout }}"
