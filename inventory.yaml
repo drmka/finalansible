@@ -1,0 +1,7 @@
+---
+all:
+  children:
+    servidores_jboss:
+      hosts:
+        localhosts:  
+          ansible_connection: local
