@@ -1,0 +1,12 @@
+---
+- name: Despliegue de Infraestructura y Componentes JBoss
+  hosts: servidores_jboss
+  become: true
+  roles:
+    - role: jboss_infra
+      tags: solo_jboss   # <--- Etiqueta para JBoss
+
+
+#ansible-playbook -i inventory.yml site.yml --tags "solo_apache"
+
+#ansible-playbook -i inventory.yml principal.yml
