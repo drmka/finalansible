@@ -1,0 +1,30 @@
+---
+# 1. Crear la carpeta para los logs
+- name: "Fase 3: Crear directorio de logs"
+  ansible.builtin.file:
+    path: "{{ ruta_logs }}"
+    state: directory
+    mode: '0755'
+
+# 2. Crear el segundo Volumen Lógico (LV) de 1 GB para Logs dentro del mismo VG
+- name: "Fase 3: Crear el Volumen Lógico {{ volumen_logs }} de 1 GB"
+  community.general.lvol:
+    vg: "{{ grupo_volumen }}"
+    lv: "{{ volumen_logs }}"
+    size: 1g
+    state: present
+
+# 3. Crear el File System (Formatear el LV de logs en ext4)
+- name: "Fase 3: Crear File System ext4 en el volumen lógico de logs"
+  community.general.filesystem:
+    dev: "/dev/{{ grupo_volumen }}/{{ volumen_logs }}"
+    fstype: "{{ filesystem }}"
+    state: present
+
+# 4. Montar el Volumen Lógico en la carpeta de logs
+- name: "Fase 3: Montar el volumen lógico de logs de forma activa"
+  ansible.posix.mount:
+    path: "{{ ruta_logs }}"
+    src: "/dev/{{ grupo_volumen }}/{{ volumen_logs }}"
+    fstype: "{{ filesystem }}"
+    state: mounted
